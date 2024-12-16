@@ -9,24 +9,22 @@ const CHERRY_POINTS = 10
 
 const gGame = {
     score: 0,
-    isOn: false
+    isOn: false,
+    foodCollected: 0,
 }
 var gBoard
 var gTotalFood
 var gCherryInterval
 
 // Audio
-var gAudio = new Audio('aud/pacman_chomp.wav')
-gAudio.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-}, false);
+var gChompAudio = new Audio('aud/pacman_chomp.wav')
 
 
 function onInit() {
     console.log('hello')
     gGame.score = 0
     gGame.isOn = true
+    gGame.foodCollected = 0
     document.querySelector('.game-over-container').style.display = 'none'
 
     gBoard = buildBoard()
@@ -42,7 +40,7 @@ function onInit() {
 function buildBoard() {
     const size = 10
     const board = []
-    gTotalFood = -1 // pacman removes food he stands on
+    gTotalFood = -1 //  pacman removes food he stands on
 
     for (var i = 0; i < size; i++) {
         board.push([])
@@ -54,15 +52,16 @@ function buildBoard() {
                 board[i][j] = WALL
                 continue
             }
-            var cellContent = FOOD
 
             if ((i === 1 && j === 1) ||
                 (i === 1 && j === size - 2) ||
                 (i === size - 2 && j === 1) ||
                 (i === size - 2 && j === size - 2)) {
-                cellContent = SUPER_FOOD
+                board[i][j] = SUPER_FOOD
+                continue
             }
-            board[i][j] = cellContent
+
+            board[i][j] = FOOD
             gTotalFood++
         }
     }
@@ -84,7 +83,7 @@ function gameOver() {
     document.querySelector('.game-over-container').style.display = 'block'
 
     var victoryDisplay = 'none'
-    if (gGame.score === gTotalFood + gPacman.cherriesCollected * CHERRY_POINTS) victoryDisplay = 'block'
+    if (gGame.foodCollected === gTotalFood) victoryDisplay = 'block'
     document.querySelector('.is-victory').style.display = victoryDisplay
     clearInterval(gCherryInterval)
 }
@@ -94,9 +93,7 @@ function createCherry() {
     if (!emptyCells.length) return
 
     var randIdx = getRandomIntInclusive(0, emptyCells.length - 1)
-    console.log('randIdx:', randIdx)
     var cellLoc = emptyCells[randIdx]
-    console.log('cellLoc:', cellLoc)
     gBoard[cellLoc.i][cellLoc.j] = CHERRY
     renderCell(cellLoc, CHERRY)
 }
@@ -109,6 +106,6 @@ function getEmptyCells() {
             if (gBoard[i][j] === EMPTY) emptyCells.push({ i, j })
         }
     }
-    
+
     return emptyCells
 }

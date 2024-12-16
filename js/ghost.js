@@ -6,6 +6,7 @@ var gGhosts = []
 var gGhostsInterval
 
 function createGhosts(board) {
+    gGhosts = []
     // TODO: Create 3 ghosts and an interval
     for (var i = 0; i < 3; i++) {
         createGhost(board)
@@ -46,6 +47,7 @@ function moveGhost(ghost) {
 
     // TODO: return if cannot move
     if (nextCell === WALL || nextCell === GHOST) return
+    if (nextCell === PACMAN && gPacman.isSuper) return
 
     // TODO: hitting a pacman? call gameOver
     if (nextCell === PACMAN && !gPacman.isSuper) {
@@ -88,12 +90,19 @@ function getGhostHTML(ghost) {
 
 function removeGhost(loc) {
     var removeIdx = -1
+    var shouldAddFood = false
 
     for (var i = 0; i < gGhosts.length; i++) {
         var currLoc = gGhosts[i].location
-        if (currLoc.i === loc.i && currLoc.j === loc.j) removeIdx = i
+        if (currLoc.i === loc.i && currLoc.j === loc.j) {
+            console.log('remove ghost')
+            shouldAddFood = gGhosts[i].currCellContent === FOOD
+            removeIdx = i
+        }
     }
 
     gGhosts.splice(removeIdx, 1)
     console.log('gGhosts:', gGhosts)
+
+    return shouldAddFood
 }

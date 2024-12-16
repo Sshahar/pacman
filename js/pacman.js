@@ -4,10 +4,11 @@ const PACMAN = '😜'
 var gPacman
 
 function createPacman(board) {
-    // TODO: initialize gPacman...
+    // initialize gPacman...
     gPacman = {
         location: { i: 5, j: 5 },
         isSuper: false,
+        cherriesCollected: 0,
     }
     gBoard[gPacman.location.i][gPacman.location.j] = PACMAN
 }
@@ -16,24 +17,32 @@ function movePacman(ev) {
 
     if (!gGame.isOn) return
 
-    // TODO: use getNextLocation(), nextCell
+    // use getNextLocation(), nextCell
     const nextLocation = getNextLocation(ev)
     if (!nextLocation) return
 
     const nextCell = gBoard[nextLocation.i][nextLocation.j]
 
-    // TODO: return if cannot move
+    // return if cannot move
     if (nextCell === WALL) return
 
-    // TODO: hitting a ghost? call gameOver
-    if (gPacman.isSuper && nextCell === GHOST) removeGhost({ nextLocation })
-    else if (nextCell === GHOST) {
+    // hitting a ghost?
+    if (gPacman.isSuper && nextCell === GHOST) {
+        if (removeGhost(nextLocation)) {
+            gGame.foodCollected++
+            console.log('gGame.foodCollected:', gGame.foodCollected)
+        }        
+    } else if (nextCell === GHOST) {
         gameOver()
         return
     }
 
-    // TODO: hitting food? call updateScore
-    if (nextCell === FOOD) updateScore(1)
+    // hitting food? call updateScore
+    if (nextCell === FOOD) {
+        gChompAudio.play()
+        gGame.foodCollected++
+        updateScore(1)
+    }
     else if (nextCell === SUPER_FOOD && gPacman.isSuper) return
     else if (nextCell === SUPER_FOOD) onSuperPacman()
     else if (nextCell === CHERRY) {
@@ -41,22 +50,22 @@ function movePacman(ev) {
         updateScore(10)
     }
 
-    // TODO: moving from current location:
-    // TODO: update the model
+    // moving from current location:
+    // update the model
     gBoard[gPacman.location.i][gPacman.location.j] = EMPTY
 
-    // TODO: update the DOM
+    // update the DOM
     renderCell(gPacman.location, EMPTY)
 
-    // TODO: Move the pacman to new location:
-    // TODO: update the model
+    // Move the pacman to new location:
+    // update the model
     gPacman.location = nextLocation
     gBoard[gPacman.location.i][gPacman.location.j] = PACMAN
 
-    // TODO: update the DOM
+    // update the DOM
     renderCell(gPacman.location, PACMAN)
 
-    if (gTotalFood === gGame.score) {
+    if (gTotalFood === gGame.foodCollected) {
         gameOver()
         return
     }
@@ -68,7 +77,7 @@ function getNextLocation(eventKeyboard) {
         i: gPacman.location.i,
         j: gPacman.location.j,
     }
-    // TODO: figure out nextLocation
+    // figure out nextLocation
     switch (eventKeyboard.key) {
         case 'ArrowUp':
             nextLocation.i--
