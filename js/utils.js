@@ -16,7 +16,7 @@ function renderBoard(mat, selector) {
         strHTML += '</tr>'
     }
     strHTML += '</tbody></table>'
-    
+
     const elContainer = document.querySelector(selector)
     elContainer.innerHTML = strHTML
 }
@@ -25,6 +25,8 @@ function renderBoard(mat, selector) {
 function renderCell(location, value) {
     // Select the elCell and set the value
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
+
+    if (value === PACMAN) value = `<img src="img/pacman-${gPacman.direction}.png">`
     elCell.innerHTML = value
 }
 

@@ -62,6 +62,7 @@ function movePacman(ev) {
     }
 }
 
+
 function getNextLocation(eventKeyboard) {
     var nextLocation = {
         i: gPacman.location.i,
@@ -71,15 +72,19 @@ function getNextLocation(eventKeyboard) {
     switch (eventKeyboard.key) {
         case 'ArrowUp':
             nextLocation.i--
+            gPacman.direction = 'up'
             break;
         case 'ArrowDown':
             nextLocation.i++
+            gPacman.direction = 'down'
             break;
         case 'ArrowLeft':
             nextLocation.j--
+            gPacman.direction = 'left'
             break;
         case 'ArrowRight':
             nextLocation.j++
+            gPacman.direction = 'right'
             break;
 
         default:

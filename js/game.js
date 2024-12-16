@@ -15,6 +15,14 @@ var gBoard
 var gTotalFood
 var gCherryInterval
 
+// Audio
+var gAudio = new Audio('aud/pacman_chomp.wav')
+gAudio.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
+
+
 function onInit() {
     console.log('hello')
     gGame.score = 0
@@ -26,6 +34,7 @@ function onInit() {
     createGhosts(gBoard)
     gCherryInterval = setInterval(createCherry, 3000)
 
+    // gAudio.play()
     renderBoard(gBoard, '.board-container')
     gGame.isOn = true
 }
