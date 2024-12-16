@@ -2,6 +2,7 @@
 
 const WALL = '&#8251;'
 const FOOD = '&middot;'
+const SUPER_FOOD = '&#9900;'
 const EMPTY = ' '
 
 const gGame = {
@@ -20,13 +21,13 @@ function onInit() {
     gBoard = buildBoard()
     createPacman(gBoard)
     createGhosts(gBoard)
-    
+
     renderBoard(gBoard, '.board-container')
     gGame.isOn = true
 }
 
 function buildBoard() {
-    const size = 7
+    const size = 10
     const board = []
     gTotalFood = -1 // pacman removes food he stands on
 
@@ -40,7 +41,15 @@ function buildBoard() {
                 board[i][j] = WALL
                 continue
             }
-            board[i][j] = FOOD
+            var cellContent = FOOD
+
+            if ((i === 1 && j === 1) ||
+                (i === 1 && j === size - 2) ||
+                (i === size - 2 && j === 1) ||
+                (i === size - 2 && j === size - 2)) {
+                cellContent = SUPER_FOOD
+            }
+            board[i][j] = cellContent
             gTotalFood++
         }
     }
@@ -52,7 +61,7 @@ function updateScore(diff) {
     // TODO: update model and dom
     gGame.score += diff
 
-    const elScore= document.querySelector('.score span')
+    const elScore = document.querySelector('.score span')
     elScore.innerText = gGame.score
 }
 
@@ -60,8 +69,8 @@ function gameOver() {
     console.log('Game Over')
     gGame.isOn = false
     document.querySelector('.game-over-container').style.display = 'block'
-    
+
     var victoryDisplay = 'none'
     if (gGame.score === gTotalFood) victoryDisplay = 'block'
-document.querySelector('.is-victory').style.display = victoryDisplay 
+    document.querySelector('.is-victory').style.display = victoryDisplay
 }
