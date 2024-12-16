@@ -104,5 +104,6 @@ function removeGhost(loc) {
     gGhosts.splice(removeIdx, 1)
     console.log('gGhosts:', gGhosts)
 
+    setTimeout(() => createGhost(gBoard),5000)
     return shouldAddFood
 }
