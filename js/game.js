@@ -3,7 +3,9 @@
 const WALL = '&#8251;'
 const FOOD = '&middot;'
 const SUPER_FOOD = '&#9900;'
+const CHERRY = '🍒'
 const EMPTY = ' '
+const CHERRY_POINTS = 10
 
 const gGame = {
     score: 0,
@@ -11,6 +13,7 @@ const gGame = {
 }
 var gBoard
 var gTotalFood
+var gCherryInterval
 
 function onInit() {
     console.log('hello')
@@ -21,6 +24,7 @@ function onInit() {
     gBoard = buildBoard()
     createPacman(gBoard)
     createGhosts(gBoard)
+    gCherryInterval = setInterval(createCherry, 3000)
 
     renderBoard(gBoard, '.board-container')
     gGame.isOn = true
@@ -71,6 +75,31 @@ function gameOver() {
     document.querySelector('.game-over-container').style.display = 'block'
 
     var victoryDisplay = 'none'
-    if (gGame.score === gTotalFood) victoryDisplay = 'block'
+    if (gGame.score === gTotalFood + gPacman.cherriesCollected * CHERRY_POINTS) victoryDisplay = 'block'
     document.querySelector('.is-victory').style.display = victoryDisplay
+    clearInterval(gCherryInterval)
+}
+
+function createCherry() {
+    var emptyCells = getEmptyCells()
+    if (!emptyCells.length) return
+
+    var randIdx = getRandomIntInclusive(0, emptyCells.length - 1)
+    console.log('randIdx:', randIdx)
+    var cellLoc = emptyCells[randIdx]
+    console.log('cellLoc:', cellLoc)
+    gBoard[cellLoc.i][cellLoc.j] = CHERRY
+    renderCell(cellLoc, CHERRY)
+}
+
+function getEmptyCells() {
+    var emptyCells = []
+
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            if (gBoard[i][j] === EMPTY) emptyCells.push({ i, j })
+        }
+    }
+    
+    return emptyCells
 }

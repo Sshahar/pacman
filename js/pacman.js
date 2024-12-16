@@ -36,6 +36,10 @@ function movePacman(ev) {
     if (nextCell === FOOD) updateScore(1)
     else if (nextCell === SUPER_FOOD && gPacman.isSuper) return
     else if (nextCell === SUPER_FOOD) onSuperPacman()
+    else if (nextCell === CHERRY) {
+        gPacman.cherriesCollected++
+        updateScore(10)
+    }
 
     // TODO: moving from current location:
     // TODO: update the model
